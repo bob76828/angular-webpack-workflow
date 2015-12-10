@@ -2,7 +2,7 @@
 // Avoids some weird issues when using webpack + angular.
 
 import 'angular';
-import 'angular-mocks/angular-mocks';
+import 'angular-mocks';
 
 var testsContext = require.context(".", true, /.test$/);
 testsContext.keys().forEach(testsContext);

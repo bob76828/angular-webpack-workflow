@@ -1,52 +1,42 @@
+require('babel-core/register');
+var webpackConfig = require('./webpack.test.babel.js');
+
 // Reference: http://karma-runner.github.io/0.12/config/configuration-file.html
-module.exports = function karmaConfig (config) {
-  config.set({
-    frameworks: [
-      // Reference: https://github.com/karma-runner/karma-jasmine
-      // Set framework to jasmine
-      'jasmine'
-    ],
+module.exports = function karmaConfig(config) {
+    config.set({
+        frameworks: ['mocha', 'sinon-chai'],
 
-    reporters: [
-      // Reference: https://github.com/mlex/karma-spec-reporter
-      // Set reporter to print detailed results to console
-      'spec',
+        reporters: ['spec', 'coverage'],
 
-      // Reference: https://github.com/karma-runner/karma-coverage
-      // Output code coverage files
-      'coverage'
-    ],
+        files: ['test/tests.webpack.js'],
 
-    files: [
-      // Grab all files in the app folder that contain .test.
-      'src/tests.webpack.js'
-    ],
+        preprocessors: {
+            'test/tests.webpack.js': ['webpack', 'sourcemap']
+        },
 
-    preprocessors: {
-      // Reference: http://webpack.github.io/docs/testing.html
-      // Reference: https://github.com/webpack/karma-webpack
-      // Convert files with webpack and load sourcemaps
-      'src/tests.webpack.js': ['webpack', 'sourcemap']
-    },
+        browsers: [
+            // Run tests using PhantomJS
+            'PhantomJS'
+        ],
 
-    browsers: [
-      // Run tests using PhantomJS
-      'PhantomJS'
-    ],
+        singleRun: true,
 
-    singleRun: true,
+        // Configure code coverage reporter
+        coverageReporter: {
+            reporters: [
+                {type: 'html'},
+                {type: 'text'},
+                {type: 'text-summary'},
+            ],
+            dir: 'coverage/'
+        },
 
-    // Configure code coverage reporter
-    coverageReporter: {
-      dir: 'build/coverage/',
-      type: 'html'
-    },
+        port: 9876,
 
-    webpack: require('./webpack.test'),
+        colors: true,
 
-    // Hide webpack build information from output
-    webpackMiddleware: {
-      noInfo: true
-    }
-  });
+        logLevel: config.LOG_INFO,
+
+        webpack: webpackConfig
+    });
 };
