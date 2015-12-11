@@ -1,27 +1,25 @@
-require('babel-core/register');
-var webpackConfig = require('./webpack.test.babel.js');
-
-// Reference: http://karma-runner.github.io/0.12/config/configuration-file.html
 module.exports = function karmaConfig(config) {
     config.set({
         frameworks: ['mocha', 'sinon-chai'],
 
         reporters: ['spec', 'coverage'],
 
-        files: ['test/tests.webpack.js'],
+        files: [
+            'node_modules/angular/angular.js',
+            'node_modules/angular-mocks/angular-mocks.js',
+            'test/tests.webpack.js'
+        ],
 
         preprocessors: {
             'test/tests.webpack.js': ['webpack', 'sourcemap']
         },
 
         browsers: [
-            // Run tests using PhantomJS
             'PhantomJS'
         ],
 
         singleRun: true,
 
-        // Configure code coverage reporter
         coverageReporter: {
             reporters: [
                 {type: 'html'},
@@ -37,6 +35,37 @@ module.exports = function karmaConfig(config) {
 
         logLevel: config.LOG_INFO,
 
-        webpack: webpackConfig
+        webpack: {
+            devtool: 'inline-source-map',
+            module: {
+                preLoaders: [{
+                    test: /\.js$/,
+                    exclude: [
+                        /node_modules/,
+                        /\.test\.js$/
+                    ],
+                    loader: 'isparta-instrumenter'
+                }],
+                loaders: [
+                    {
+                        test: /\.js$/,
+                        loader: 'babel',
+                        exclude: /(node_modules)/,
+                        query: {
+                            plugins: ['transform-runtime'],
+                            cacheDirectory: true
+                        }
+                    },
+                    {
+                        test: /\.html$/,
+                        loader: 'raw'
+                    }
+                ],
+                postLoaders: []
+            }
+        },
+        webpackServer: {
+            noInfo: true
+        }
     });
 };

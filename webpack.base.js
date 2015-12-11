@@ -33,13 +33,12 @@ function webpackConfig() {
         loaders: [
             {
                 test: /\.js$/,
-                //loader: 'babel',
-                loader: 'babel?optional=runtime',
+                loader: 'babel',
                 exclude: /(node_modules)/,
-                //query: {
-                //    plugins: ['transform-runtime'],
-                //    cacheDirectory: true
-                //}
+                query: {
+                    plugins: ['transform-runtime'],
+                    cacheDirectory: true
+                }
             },
             {
                 test: /\.(png|jpg|jpeg|gif)$/,
